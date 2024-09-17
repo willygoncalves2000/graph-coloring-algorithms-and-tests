@@ -1,40 +1,32 @@
-// Nome(s) Discente(s): Willy Gonçalves Campos  
-// Matrícula(s): 0026645
-// Data: 02 de setembro de 2024
-
-
-// Declaro que sou o único autor e responsável por este programa. Todas as partes do programa, exceto as que //foram fornecidas pelo professor foram desenvolvidas por mim. Declaro também que
-// sou responsável por todas  as eventuais cópias deste programa e que não distribui nem facilitei a //distribuição de cópias.
-
 import java.util.Random;
 
 public class RandomGraphGenerator {
 
     /**
-     * Gera uma matriz de adjacência para um grafo aleatório.
+     * Generates an adjacency matrix for a random graph.
      *
-     * @param n número de vértices no grafo
-     * @param probability probabilidade de existir uma aresta entre dois vértices
-     * @return matriz de adjacência representando o grafo
+     * @param n number of vertices in the graph
+     * @param probability probability of an edge existing between two vertices
+     * @return adjacency matrix representing the graph
      */
     public static int[][] generateConnectedRandomGraph(int n, double probability) {
         int[][] graph = new int[n][n];
         Random random = new Random();
 
-        // Passo 1: Garantir que o grafo seja conexo gerando uma árvore de expansão mínima (MST) aleatória
+        // Step 1: Ensure the graph is connected by generating a random Minimum Spanning Tree (MST)
         boolean[] connected = new boolean[n];
-        connected[0] = true; // Começa do vértice 0
+        connected[0] = true; // Start from vertex 0
 
         for (int i = 1; i < n; i++) {
             int v = i;
-            // Conecta o vértice atual a qualquer um dos vértices já conectados
+            // Connect the current vertex to any of the already connected vertices
             int u = random.nextInt(i); 
             graph[u][v] = 1;
             graph[v][u] = 1;
             connected[v] = true;
         }
 
-        // Passo 2: Adicionar arestas aleatórias com base na probabilidade especificada
+        // Step 2: Add random edges based on the specified probability
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 if (graph[i][j] == 0 && random.nextDouble() < probability) {
@@ -48,9 +40,9 @@ public class RandomGraphGenerator {
     }
 
     /**
-     * Imprime a matriz de adjacência.
+     * Prints the adjacency matrix.
      *
-     * @param graph matriz de adjacência do grafo
+     * @param graph adjacency matrix of the graph
      */
     public static void printGraph(int[][] graph) {
         int n = graph.length;
@@ -61,29 +53,4 @@ public class RandomGraphGenerator {
             System.out.println();
         }
     }
-
-    // public static void main(String[] args) {
-    //     double[] probabilities = {0.1, 0.3, 0.5, 0.7, 0.9};
-    //     Random random = new Random();
-
-    //     for (int vertices = 1; vertices <= 10; vertices++) { // Supondo que 100 seja o limite de vértices, ajuste conforme necessário
-    //         double probability = probabilities[random.nextInt(probabilities.length)];
-    //         int[][] graph = generateConnectedRandomGraph(vertices, probability);
-
-    //         // Aqui você chamaria o algoritmo de coloração com o grafo gerado
-    //         // colorGraph(graph);
-
-    //         // Exemplo: Exibir a probabilidade escolhida e o tamanho do grafo
-    //         System.out.println("Grafo com " + vertices + " vértices e probabilidade " + probability);
-    //         printGraph(graph);
-    //     }
-    // }    
-    //     int n = 5; // Número de vértices
-    //     double probability = 0.5; // Probabilidade de existir uma aresta entre dois vértices
-
-    //     int[][] graph = generateRandomGraph(n, probability);
-
-    //     System.out.println("Grafo aleatorio gerado (matriz de adjacencia):");
-    //     printGraph(graph);
-    // }
 }

@@ -1,18 +1,10 @@
-// Nome(s) Discente(s): Willy Gonçalves Campos  
-// Matrícula(s): 0026645
-// Data: 02 de setembro de 2024
-
-
-// Declaro que sou o único autor e responsável por este programa. Todas as partes do programa, exceto as que //foram fornecidas pelo professor foram desenvolvidas por mim. Declaro também que
-// sou responsável por todas  as eventuais cópias deste programa e que não distribui nem facilitei a //distribuição de cópias.
-
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.Random;
 
-// Classe para armazenar o grafo e a probabilidade associada
+// Class to store the graph and associated probability
 class GraphWithProbability {
     int[][] graph;
     double probability;
@@ -25,8 +17,8 @@ class GraphWithProbability {
 
 public class GraphColoringTest {
 
-    private static final int MAX_VERTICES = 50; // Maximo numero de vertices para o teste
-    private static final int DURATION = 15; // Duracao total de execucao para cada algoritmo (em minutos)
+    private static final int MAX_VERTICES = 50; // Maximum number of vertices for the test
+    private static final int DURATION = 15; // Total execution duration for each algorithm (in minutes)
 
 
     private static int TOTAL_VERTICES_GREEDY = 0;
@@ -38,42 +30,42 @@ public class GraphColoringTest {
     private static long startTime;
 
     public static void main(String[] args) {
-        // Armazenar grafos e suas probabilidades para garantir que sejam os mesmos para ambos os algoritmos
+        // Store graphs and their probabilities to ensure they are the same for both algorithms
         GraphWithProbability[] storedGraphs = new GraphWithProbability[MAX_VERTICES + 1];
 
-        // Primeiro, gerar e armazenar os grafos
+        // First, generate and store the graphs
         for (int n = 1; n <= MAX_VERTICES; n++) {
-            storedGraphs[n] = generateGraphForBothAlgorithms(n); // Gerar e armazenar o grafo com sua probabilidade
+            storedGraphs[n] = generateGraphForBothAlgorithms(n); // Generate and store the graph with its probability
         }
 
-        // Executar o algoritmo guloso para todos os grafos
-        System.out.println("Iniciando teste com algoritmo Guloso...");
-        // Armazenar o tempo de início
+        // Run the greedy algorithm for all graphs
+        System.out.println("Starting test with Greedy algorithm...");
+        // Store the start time
         startTime = System.currentTimeMillis();
-        runAlgorithmTest("Guloso", storedGraphs);
+        runAlgorithmTest("Greedy", storedGraphs);
 
-        // Executar o algoritmo de backtracking para todos os grafos
-        System.out.println("\nIniciando teste com algoritmo de Backtracking...");
+        // Run the backtracking algorithm for all graphs
+        System.out.println("\nStarting test with Backtracking algorithm...");
         startTime = System.currentTimeMillis();
         runAlgorithmTest("Backtracking", storedGraphs);
 
-        // Exibir resultados
-        System.out.println("\nTestes concluidos.");
-        System.out.println("\nApos " + DURATION + " minutos:");
-        System.out.println("Algoritmo de Coloracao Guloso resolveu grafos de 1 a " + TOTAL_VERTICES_GREEDY + " vertices com um numero cromatico maximo de " + CHROMATIC_NUMBER_GREEDY + " cores.");
-        System.out.println("Algoritmo de Coloracao Backtracking resolveu grafos de 1 a " + TOTAL_VERTICES_BACKTRACKING + " vertices com um numero cromatico maximo de " + CHROMATIC_NUMBER_BACKTRACKING + " cores.");
+        // Display results
+        System.out.println("\nTests completed.");
+        System.out.println("\nAfter " + DURATION + " minutes:");
+        System.out.println("Greedy Coloring Algorithm solved graphs from 1 to " + TOTAL_VERTICES_GREEDY + " vertices with a maximum chromatic number of " + CHROMATIC_NUMBER_GREEDY + " colors.");
+        System.out.println("Backtracking Coloring Algorithm solved graphs from 1 to " + TOTAL_VERTICES_BACKTRACKING + " vertices with a maximum chromatic number of " + CHROMATIC_NUMBER_BACKTRACKING + " colors.");
     }
 
     private static GraphWithProbability generateGraphForBothAlgorithms(int n) {
         Random random = new Random();
         double[] probabilities = {0.1, 0.3, 0.5};
         double probability = probabilities[random.nextInt(probabilities.length)];
-        System.out.println("Gerando grafo conexo com " + n + " vertices e probabilidade " + probability);
+        System.out.println("Generating connected graph with " + n + " vertices and probability " + probability);
 
-        // Gerar o grafo unico para ambos os algoritmos
+        // Generate the unique graph for both algorithms
         int[][] graph = RandomGraphGenerator.generateRandomConnectedGraph(n, probability);
 
-        // Retornar o grafo junto com a probabilidade usada
+        // Return the graph along with the used probability
         return new GraphWithProbability(graph, probability);
     }
 
@@ -81,32 +73,32 @@ public class GraphColoringTest {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         final boolean[] timeExpired = {false};
 
-        // Iniciar a thread de coloração
+        // Start the coloring thread
         Thread coloringThread = new Thread(() -> {
             for (int n = 1; n <= MAX_VERTICES && !timeExpired[0]; n++) {
-                System.out.println("Probabilidade usada para gerar o grafo: " + storedGraphs[n].probability);
+                System.out.println("Probability used to generate the graph: " + storedGraphs[n].probability);
                 try {
                     if (algorithm.equals("Backtracking")) {
                         GraphColoringBacktracking backtracking = new GraphColoringBacktracking(storedGraphs[n].graph);
-                        System.out.println("APLICANDO COLORACAO...");
+                        System.out.println("APPLYING COLORING...");
                         int chromaticNumber = backtracking.findChromaticNumber();
                         if (!Thread.currentThread().isInterrupted()) {
                             backtracking.printSolution();
-                            System.out.println("Grafo com " + n + " vertices resolvido com " + chromaticNumber + " cores (Backtracking).");
-                            System.out.println("================ Time: " + ((System.currentTimeMillis() - startTime) / 1000) + " seg ================");
+                            System.out.println("Graph with " + n + " vertices solved with " + chromaticNumber + " colors (Backtracking).");
+                            System.out.println("================ Time: " + ((System.currentTimeMillis() - startTime) / 1000) + " secs ================");
                             TOTAL_VERTICES_BACKTRACKING = n;
                             if (CHROMATIC_NUMBER_BACKTRACKING < chromaticNumber) {
                                 CHROMATIC_NUMBER_BACKTRACKING = chromaticNumber;
                             }
                         }
-                    } else if (algorithm.equals("Guloso")) {
-                        System.out.println("APLICANDO COLORACAO...");
+                    } else if (algorithm.equals("Greedy")) {
+                        System.out.println("APPLYING COLORING...");
                         GraphColoringGreedy greedy = new GraphColoringGreedy(storedGraphs[n].graph);
                         greedy.greedyColoring();
                         if (!Thread.currentThread().isInterrupted()) {
                             greedy.printSolution();
-                            System.out.println("Grafo com " + n + " vertices resolvido com " + greedy.getChromaticNumber() + " cores (Guloso).");
-                            System.out.println("================ Time: " + ((System.currentTimeMillis() - startTime) / 1000) + " seg ================");
+                            System.out.println("Graph with " + n + " vertices solved with " + greedy.getChromaticNumber() + " colors (Greedy).");
+                            System.out.println("================ Time: " + ((System.currentTimeMillis() - startTime) / 1000) + " secs ================");
                             TOTAL_VERTICES_GREEDY = n;
                             if (CHROMATIC_NUMBER_GREEDY < greedy.getChromaticNumber()) {
                                 CHROMATIC_NUMBER_GREEDY = greedy.getChromaticNumber();
@@ -115,37 +107,37 @@ public class GraphColoringTest {
                         }
                     }
                 } catch (InterruptedException e) {
-                    System.out.println("Thread interrompida. Cancelando a coloracao do grafo com " + n + " vertices.");
-                    Thread.currentThread().interrupt(); // Preservar o estado de interrupcao
-                    break; // Sair do loop se a thread foi interrompida
+                    System.out.println("Thread interrupted. Cancelling the coloring of the graph with " + n + " vertices.");
+                    Thread.currentThread().interrupt(); // Preserve the interrupt status
+                    break; // Exit the loop if the thread was interrupted
                 }
 
                 System.out.println("=============================================================");
             }
         });
 
-        // Agendar a interrupção da thread após o tempo limite
+        // Schedule thread interruption after the timeout
         scheduler.schedule(() -> {
             timeExpired[0] = true;
             if (coloringThread.isAlive()) {
                 coloringThread.interrupt();
-                // System.out.println("Tempo de execucao para " + algorithm + " esgotado. Interrompendo e mostrando resultados.");
+                // System.out.println("Execution time for " + algorithm + " expired. Interrupting and showing results.");
                 try {
-                    coloringThread.join(); // Esperar a thread terminar e mostrar resultados imediatamente
+                    coloringThread.join(); // Wait for the thread to finish and show results immediately
                 } catch (InterruptedException e) {
-                    System.out.println("Execucao interrompida durante o join.");
+                    System.out.println("Execution interrupted during join.");
                     Thread.currentThread().interrupt();
                 }
             }
             scheduler.shutdown();
         }, DURATION, TimeUnit.MINUTES);
 
-        // Iniciar e aguardar o término da thread de coloração
+        // Start and wait for the coloring thread to complete
         coloringThread.start();
         try {
             coloringThread.join();
         } catch (InterruptedException e) {
-            System.out.println("Execucao interrompida.");
+            System.out.println("Execution interrupted.");
             Thread.currentThread().interrupt();
         }
     }
@@ -156,14 +148,14 @@ class RandomGraphGenerator {
         int[][] graph = new int[n][n];
         Random random = new Random();
 
-        // Primeiro, criar uma arvore para garantir que o grafo seja conexo
+        // First, create a tree to ensure the graph is connected
         for (int i = 1; i < n; i++) {
             int v = random.nextInt(i);
             graph[i][v] = 1;
             graph[v][i] = 1;
         }
 
-        // Agora, adicionar arestas adicionais com a probabilidade dada
+        // Now, add additional edges with the given probability
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 if (graph[i][j] == 0 && random.nextDouble() < probability) {
@@ -216,9 +208,9 @@ class GraphColoringBacktracking {
                 colors[v] = -1;
             }
 
-            // Verificacao frequente de interrupcao
+            // Frequent interruption check
             if (Thread.currentThread().isInterrupted()) {
-                throw new InterruptedException("Interrupcao detectada durante a coloracao do grafo com " + vertices + " vertices.");
+                throw new InterruptedException("Interruption detected during coloring of the graph with " + vertices + " vertices.");
             }
         }
 
@@ -233,15 +225,15 @@ class GraphColoringBacktracking {
                 break;
             }
             if (Thread.currentThread().isInterrupted()) {
-                System.out.println("Interrupcao detectada durante o calculo do numero cromatico para " + vertices + " vertices.");
-                throw new InterruptedException("Interrupcao detectada durante o calculo do numero cromatico para " + vertices + " vertices.");
+                System.out.println("Interruption detected during chromatic number calculation for " + vertices + " vertices.");
+                throw new InterruptedException("Interruption detected during chromatic number calculation for " + vertices + " vertices.");
             }
         }
         return chromaticNumber;
     }
 
     public void printSolution() {
-        System.out.println("Backtracking: A coloracao do grafo usa " + chromaticNumber + " cores.");
+        System.out.println("Backtracking: The graph coloring uses " + chromaticNumber + " colors.");
     }
 }
 
@@ -259,43 +251,29 @@ class GraphColoringGreedy {
         this.chromaticNumber = 0;
     }
 
-    public void greedyColoring() throws InterruptedException {
+    public void greedyColoring() {
         colors[0] = 0;
         chromaticNumber = 1;
 
-        boolean[] available = new boolean[vertices];
-
-        for (int u = 1; u < vertices; u++) {
-            if (Thread.currentThread().isInterrupted()) {
-                System.out.println("Interrupcao detectada durante a coloracao gulosa para " + vertices + " vertices.");
-                throw new InterruptedException("Interrupcao detectada durante a coloracao gulosa para " + vertices + " vertices.");
-            }
+        for (int v = 1; v < vertices; v++) {
+            boolean[] available = new boolean[vertices];
             Arrays.fill(available, true);
 
             for (int i = 0; i < vertices; i++) {
-                if (graph[u][i] == 1 && colors[i] != -1) {
+                if (graph[v][i] == 1 && colors[i] != -1) {
                     available[colors[i]] = false;
                 }
             }
 
-            int cr;
-            for (cr = 0; cr < vertices; cr++) {
-                if (available[cr]) {
+            int color;
+            for (color = 0; color < vertices; color++) {
+                if (available[color]) {
                     break;
                 }
             }
 
-            colors[u] = cr;
-
-            if (cr + 1 > chromaticNumber) {
-                chromaticNumber = cr + 1;
-            }
-
-            // Verificacao frequente de interrupcao
-            if (Thread.currentThread().isInterrupted()) {
-                System.out.println("Interrupcao detectada durante a coloracao gulosa para " + vertices + " vertices.");
-                throw new InterruptedException("Interrupcao detectada durante a coloracao gulosa para " + vertices + " vertices.");
-            }
+            colors[v] = color;
+            chromaticNumber = Math.max(chromaticNumber, color + 1);
         }
     }
 
@@ -304,6 +282,6 @@ class GraphColoringGreedy {
     }
 
     public void printSolution() {
-        System.out.println("Guloso: A coloracao do grafo usa " + chromaticNumber + " cores.");
+        System.out.println("Greedy: The graph coloring uses " + chromaticNumber + " colors.");
     }
 }

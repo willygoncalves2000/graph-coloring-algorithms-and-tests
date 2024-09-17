@@ -1,11 +1,3 @@
-// Nome(s) Discente(s): Willy Gonçalves Campos  
-// Matrícula(s): 0026645
-// Data: 02 de setembro de 2024
-
-
-// Declaro que sou o único autor e responsável por este programa. Todas as partes do programa, exceto as que //foram fornecidas pelo professor foram desenvolvidas por mim. Declaro também que
-// sou responsável por todas  as eventuais cópias deste programa e que não distribui nem facilitei a //distribuição de cópias.
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,27 +7,27 @@ import java.util.ArrayList;
 
 public class Main {
 
-    private static int vertices = 1; // Número inicial de vértices
-    private static int lastColoredVertices = 0; // Número de vértices do último grafo colorido com sucesso
-    private static final int TOTAL_DURATION = 180; // Duração total em minutos
-    private static final int[] INTERVALS = {10, 30, 60, 120, 180}; // Intervalos em minutos
+    private static int vertices = 1; // Initial number of vertices
+    private static int lastColoredVertices = 0; // Number of vertices in the last successfully colored graph
+    private static final int TOTAL_DURATION = 180; // Total duration in minutes
+    private static final int[] INTERVALS = {10, 30, 60, 120, 180}; // Intervals in minutes
     private static long startTime;
     private static boolean stopRequested = false;
-    private static List<Integer> verticesAtIntervals = new ArrayList<>(); // Para armazenar os vértices nos intervalos
+    private static List<Integer> verticesAtIntervals = new ArrayList<>(); // To store vertices at intervals
 
     public static void main(String[] args) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-        // Armazenar o tempo de início
+        // Store the start time
         startTime = System.currentTimeMillis();
 
-        // Agendar a exibição do número de vértices em intervalos específicos
+        // Schedule the display of the number of vertices at specific intervals
         for (int interval : INTERVALS) {
             scheduler.schedule(() -> {
                 verticesAtIntervals.add(lastColoredVertices);
-                System.out.println("Tempo: " + interval + " minutos - Numero de vertices: " + lastColoredVertices);
+                System.out.println("Time: " + interval + " minutes - Number of vertices: " + lastColoredVertices);
                 
-                // Se o intervalo for igual ao TOTAL_DURATION, encerrar a aplicação
+                // If the interval equals TOTAL_DURATION, end the application
                 if (interval == TOTAL_DURATION) {
                     displayFinalResults();
                     scheduler.shutdown();
@@ -44,10 +36,10 @@ public class Main {
             }, interval, TimeUnit.MINUTES);
         }
 
-        // Rodar a tarefa principal em um loop até que 180 minutos sejam atingidos
+        // Run the main task in a loop until 180 minutes are reached
         while (!stopRequested && (System.currentTimeMillis() - startTime) < TOTAL_DURATION * 60 * 1000) {
             generateAndColorGraph();
-            System.out.println("================ Time: " + ((System.currentTimeMillis() - startTime) / 1000) + " seg ================");
+            System.out.println("================ Time: " + ((System.currentTimeMillis() - startTime) / 1000) + " sec ================");
         }
 
         if (!scheduler.isShutdown()) {
@@ -57,52 +49,52 @@ public class Main {
 
     private static void generateAndColorGraph() {
         if (stopRequested) {
-            return; // Se foi solicitado para parar, não continuar
+            return; // If stop has been requested, do not continue
         }
         
         Random random = new Random();
-        double[] probabilities = {0.1, 0.3, 0.5, 0.7, 0.9}; // Probabilidade de existência de uma aresta
+        double[] probabilities = {0.1, 0.3, 0.5, 0.7, 0.9}; // Probability of an edge existing
         double probability = probabilities[random.nextInt(probabilities.length)];
 
-        // Gerar um grafo aleatório com o número atual de vértices
-        System.out.println("Grafo Conexo com " + vertices + " vertices e probabilidade " + probability);
+        // Generate a random graph with the current number of vertices
+        System.out.println("Connected Graph with " + vertices + " vertices and probability " + probability);
         int[][] randomGraph = RandomGraphGenerator.generateConnectedRandomGraph(vertices, probability);
 
-        // Aplicar o algoritmo de coloração de grafos
-        System.out.println("APLICANDO COLORACAO...");
+        // Apply the graph coloring algorithm
+        System.out.println("APPLYING COLORING...");
         GraphColoring graphColoring = new GraphColoring(randomGraph);
         int chromaticNumber = graphColoring.findChromaticNumber();
 
-        // Exibir o número cromático e a coloração dos vértices
-        System.out.println("Numero de vertices: " + vertices);
-        System.out.println("Numero cromatico: " + chromaticNumber);
+        // Display the chromatic number and the coloring of the vertices
+        System.out.println("Number of vertices: " + vertices);
+        System.out.println("Chromatic number: " + chromaticNumber);
         graphColoring.printSolution();
 
-        // Atualizar o número de vértices coloridos com sucesso
+        // Update the number of successfully colored vertices
         lastColoredVertices = vertices;
 
-        // Aumentar o número de vértices para a próxima iteração
+        // Increase the number of vertices for the next iteration
         vertices++;
 
-        // Verificar se o tempo total foi atingido durante a coloração do grafo atual
+        // Check if the total time has been reached during the coloring of the current graph
         if ((System.currentTimeMillis() - startTime) >= TOTAL_DURATION * 60 * 1000) {
             stopRequested = true;
         }
 
-        // Inserir uma pequena pausa antes de iniciar a próxima iteração, para permitir a exibição do estado atual
+        // Insert a short pause before starting the next iteration to allow for the current state to be displayed
         try {
-            Thread.sleep(500); // 0,5 segundos
+            Thread.sleep(500); // 0.5 seconds
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
 
     private static void displayFinalResults() {
-        System.out.println("Fim da execucao apos " + TOTAL_DURATION + " minutos.");
+        System.out.println("End of execution after " + TOTAL_DURATION + " minutes.");
 
-        // Exibir o número de vértices em cada intervalo de tempo
+        // Display the number of vertices at each time interval
         for (int i = 0; i < INTERVALS.length; i++) {
-            System.out.println("Numero de vertices no intervalo de " + INTERVALS[i] + " minutos: " + verticesAtIntervals.get(i));
+            System.out.println("Number of vertices at the " + INTERVALS[i] + " minute interval: " + verticesAtIntervals.get(i));
         }
     }
 }
