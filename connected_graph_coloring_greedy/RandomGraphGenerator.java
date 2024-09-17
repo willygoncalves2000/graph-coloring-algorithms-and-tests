@@ -15,11 +15,11 @@ public class RandomGraphGenerator {
 
         // Step 1: Ensure the graph is connected by generating a random Minimum Spanning Tree (MST)
         boolean[] connected = new boolean[n];
-        connected[0] = true; // Start from vertex 0
+        connected[0] = true; // Start from node 0
 
         for (int i = 1; i < n; i++) {
             int v = i;
-            // Connect the current vertex to any of the already connected vertices
+            // Connect the current node to any of the already connected vertices
             int u = random.nextInt(i); 
             graph[u][v] = 1;
             graph[v][u] = 1;

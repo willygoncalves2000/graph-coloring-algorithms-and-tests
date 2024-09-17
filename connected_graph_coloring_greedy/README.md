@@ -1,7 +1,7 @@
 # A backtracking-based algorithm
 
 ## Resume
-In this project, a greedy algorithm has been implemented to solve the graph coloring problem. A greedy algorithm for graph coloring is an approach where the graph is colored by assigning colors to vertices one by one in a sequence, making a local optimal choice at each step. The algorithm tries to use the smallest possible number of colors without checking for a globally optimal solution. Starting with an uncolored graph, the algorithm picks a vertex, assigns the lowest available color (that hasn’t been used by its neighbors), and then moves on to the next vertex. This process continues until all vertices are colored
+In this project, a greedy algorithm has been implemented to solve the graph coloring problem. A greedy algorithm for graph coloring is an approach where the graph is colored by assigning colors to vertices one by one in a sequence, making a local optimal choice at each step. The algorithm tries to use the smallest possible number of colors without checking for a globally optimal solution. Starting with an uncolored graph, the algorithm picks a node, assigns the lowest available color (that hasn’t been used by its neighbors), and then moves on to the next node. This process continues until all vertices are colored
 
 ## Generating Graphs for Testing
 ### In-Depth Analysis of the Algorithm
